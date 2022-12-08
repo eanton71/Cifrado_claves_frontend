@@ -1,0 +1,14 @@
+<div class="container">
+    <button class="logout-btn" type="button" (click)="logout()">Logout</button>
+    <h2>Welcome your profile</h2>
+        <div class="image-container">
+            <img class="profile-pic" [src]="path">
+            <input type="file" id="file" class="inputfile" (change)="fileSelected($event)"/>
+            <label for="file">Choose a file</label>
+
+        </div>
+    <div class="profile-data">
+        <p>Name: {{username}}</p>
+        <p>Email: {{email}}</p>
+    </div>
+</div>
