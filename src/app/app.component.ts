@@ -12,6 +12,7 @@ export class AppComponent {
   title = 'register-login-profile';
   registerForm:FormGroup;
   loginForm:FormGroup;
+
   constructor(private fb:FormBuilder, private logreg:LogregService, private route:Router){
 
     this.registerForm = this.fb.group({
@@ -27,7 +28,10 @@ export class AppComponent {
       password:['',Validators.required]
     })
 
+
+
   }
+
 
   sendLogin():void{
 
@@ -53,8 +57,9 @@ export class AppComponent {
     }
 
     this.logreg.register(this.registerForm).subscribe(result=>{
+
       if(result){
-        this.route.navigate(['/']);
+       window.location.reload();
       }
     })
 
