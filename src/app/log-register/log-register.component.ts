@@ -12,6 +12,7 @@ export class LogRegisterComponent {
 
   registerForm:FormGroup;
   loginForm:FormGroup;
+  showWarning:boolean;
 
   constructor(private fb:FormBuilder, private logreg:LogregService, private route:Router){
     this.registerForm = this.fb.group({
@@ -27,6 +28,7 @@ export class LogRegisterComponent {
       eou:['',Validators.required],
       password:['',Validators.required]
     })
+    this.showWarning = false;
   }
 
   sendLogin():void{
@@ -36,10 +38,12 @@ export class LogRegisterComponent {
     }
 
     this.logreg.login(this.loginForm).subscribe(result=>{
-      console.log(result);
+
       if(result){
-        console.log('logged');
+
         this.route.navigateByUrl('/profile');
+      }else{
+        this.showWarning = true;
       }
     })
 
@@ -59,6 +63,11 @@ export class LogRegisterComponent {
        window.location.reload();
       }
     })
+
+  }
+
+  checkSign():boolean{
+    return this.registerForm.invalid || this.registerForm.get('password')?.value !== this.registerForm.get('passrepeat')?.value
 
   }
 

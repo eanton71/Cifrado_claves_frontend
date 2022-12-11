@@ -11,15 +11,15 @@ import { User } from '../models/user';
 export class LogregService {
 
   private currentUserSubject:BehaviorSubject<User>;
-  private currentUser:Observable<User>;
 
-  private url_login = 'http://localhost:3000/api/login-user';
-  private url_register = 'http://localhost:3000/api/register-user';
-  private url_update_image = 'http://localhost:3000/api/upload/user-pic';
+
+  private url_login = '';
+  private url_register = '';
+  private url_update_image = '';
 
   constructor(private httpClient:HttpClient,private router:Router) {
     this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('user')||'{}'));
-    this.currentUser = this.currentUserSubject.asObservable();
+
    }
 
   login(login:FormGroup):Observable<boolean>{
@@ -30,7 +30,7 @@ export class LogregService {
     loginData.append('password',login.get('password')?.value);
 
     return this.httpClient.post<User>(this.url_login,loginData,{observe:'response'}).pipe(map(response=>{
-      if(response.ok){
+      if(response.status === 200){
 
         this.setLocalStorageUser(response.body!);
         return true;
@@ -66,9 +66,8 @@ export class LogregService {
 
       if(response.ok){
 
-          //let localitems = JSON.parse(localStorage.getItem('user')!);
           console.log(response.body);
-          //localitems.user_image = response.body;
+
           this.updateImageLocalStorage(response.body!);
 
           return true;
@@ -124,9 +123,9 @@ export class LogregService {
   }
 
   private updateImageLocalStorage(user:User):void{
-    console.log('changing pic to: ',user);
+
     let usr = JSON.parse(localStorage.getItem('user')!);
-    user.user_image = user.user_image;
+    user.user_image = usr.user_image;
     localStorage.setItem('user',JSON.stringify(user));
     this.currentUserSubject.next(user);
   }

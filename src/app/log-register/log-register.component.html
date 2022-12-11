@@ -38,7 +38,7 @@
             </div>
 
             <p class="text-center">or:</p>
-
+            <p class="warning-msg" *ngIf="showWarning">Email or username or password are wrong</p>
             <!-- Email input -->
             <div class="form-outline mb-4">
               <input type="email" id="loginName" class="form-control" formControlName="eou">
@@ -80,10 +80,6 @@
             <!-- Submit button -->
             <button type="submit" class="btn btn-primary btn-block mb-4">Sign in</button>
 
-            <!-- Register buttons -->
-            <div class="text-center">
-              <p>Not a member? <a href="#!">Register</a></p>
-            </div>
           </form>
         </div>
         <div class="tab-pane fade text-center" id="pills-register" role="tabpanel" aria-labelledby="tab-register">
@@ -158,6 +154,7 @@
             <!-- Repeat Password input -->
             <div class="form-outline mb-4">
               <input type="password" id="registerRepeatPassword" class="form-control" formControlName="passrepeat" />
+              <small class="text-danger" *ngIf="registerForm.controls['password'].value !== registerForm.controls['passrepeat'].value">Passwords are not equals</small>
               <label class="form-label" for="registerRepeatPassword">Repeat password</label>
               <div class="form-notch">
                 <div class="form-notch-leading" style="width: 9px;"></div>
@@ -176,7 +173,7 @@
             </div>
 
             <!-- Submit button -->
-            <button type="submit" class="btn btn-primary btn-block mb-3">Sign in</button>
+            <button type="submit" class="btn btn-primary btn-block mb-3" [disabled]="checkSign()">Sign in</button>
           </form>
         </div>
       </div>
