@@ -3,7 +3,9 @@ import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { BehaviorSubject, catchError, map, Observable, of } from 'rxjs';
+import { environment } from 'src/environments/environment';
 import { User } from '../models/user';
+import { CryptoService } from './crypto.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,11 +15,7 @@ export class LogregService {
   private currentUserSubject:BehaviorSubject<User>;
 
 
-  private url_login = '';
-  private url_register = '';
-  private url_update_image = '';
-
-  constructor(private httpClient:HttpClient,private router:Router) {
+  constructor(private httpClient:HttpClient,private router:Router, private crypto:CryptoService) {
     this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('user')||'{}'));
 
    }
@@ -26,10 +24,10 @@ export class LogregService {
 
     const loginData = new FormData();
 
-    loginData.append('eou',login.get('eou')?.value);
-    loginData.append('password',login.get('password')?.value);
+    loginData.append('eou',this.crypto.encryptData(login.get('eou')?.value));
+    loginData.append('password',this.crypto.encryptData(login.get('password')?.value));
 
-    return this.httpClient.post<User>(this.url_login,loginData,{observe:'response'}).pipe(map(response=>{
+    return this.httpClient.post<User>(environment.url_login,loginData,{observe:'response'}).pipe(map(response=>{
       if(response.status === 200){
 
         this.setLocalStorageUser(response.body!);
@@ -46,13 +44,13 @@ export class LogregService {
 
     const registerData = new FormData();
 
-    registerData.append('name',register.get('name')?.value);
-    registerData.append('username',register.get('username')?.value);
-    registerData.append('user_image',register.get('user_image')?.value);
-    registerData.append('email',register.get('email')?.value);
-    registerData.append('password',register.get('password')?.value);
+    registerData.append('name',this.crypto.encryptData(register.get('name')?.value));
+    registerData.append('username',this.crypto.encryptData(register.get('username')?.value));
+    registerData.append('user_image',this.crypto.encryptData(register.get('user_image')?.value));
+    registerData.append('email',this.crypto.encryptData(register.get('email')?.value));
+    registerData.append('password',this.crypto.encryptData(register.get('password')?.value));
 
-    return this.httpClient.post(this.url_register,registerData,{observe:'body'}).pipe(catchError(this.handleError<any>('register')));
+    return this.httpClient.post(environment.url_register,registerData,{observe:'body'}).pipe(catchError(this.handleError<any>('register')));
 
   }
 
@@ -62,7 +60,7 @@ export class LogregService {
     formData.append("user_id",userid);
     formData.append("picture",imagefile);
 
-    return this.httpClient.put<User>(this.url_update_image, formData,{observe:'response'}).pipe(map(response=>{
+    return this.httpClient.put<User>(environment.url_update_image, formData,{observe:'response'}).pipe(map(response=>{
 
       if(response.ok){
 
